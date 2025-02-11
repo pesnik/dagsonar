@@ -131,7 +131,7 @@ We love contributions! Check out our [Contributing Guide](CONTRIBUTING.md) to ge
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/pesnin/dagsonar.git
+git clone https://github.com/pesnik/dagsonar.git
 cd dagsonar
 ```
 
