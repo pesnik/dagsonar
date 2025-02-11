@@ -45,12 +45,21 @@ Source = "https://github.com/pesnik/dagsonar"
 [tool.hatch.version]
 path = "src/dagsonar/__about__.py"
 
+[tool.hatch.envs.default]
+dependencies = [
+    "black>=25.1.0",
+    "isort>=5.12.0",
+]
+
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/dagsonar tests}"
+
+[tool.hatch.envs.default.scripts]
+format = "black . && isort ."
 
 [tool.coverage.run]
 source_pkgs = ["dagsonar", "tests"]
