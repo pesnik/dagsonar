@@ -52,13 +52,11 @@ def dag_tester():
         caller()
         print("Job Completed")
 
-    task_end = end()
-
     chain(task_start, task_sensor, task_cmd, end())
-    task_start >> task_sensor >> task_cmd >> end()
+    # task_start >> task_sensor >> task_cmd >> end()
 
 
-END_MESSAGE = "End of DAG"
+END_MESSAGE = "End of DAG 1"
 FILE_PATH = "/usr/local/airflow/dags/initiator"
 
 

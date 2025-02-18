@@ -1,15 +1,15 @@
-import os
-import json
-import hashlib
-import smtplib
-import difflib
-from datetime import datetime
-from typing import Dict, List, Optional, Set
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import logging
 import ast
+import difflib
+import hashlib
+import json
+import logging
+import os
+import smtplib
+from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pathlib import Path
+from typing import Dict, List, Optional, Set
 
 
 class AirflowTaskParser:

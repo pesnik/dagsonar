@@ -1,6 +1,6 @@
 import ast
-from typing import Dict
 from pprint import pprint
+from typing import Dict
 
 
 def parse_dag_file(dag_path):

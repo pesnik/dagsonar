@@ -1,14 +1,15 @@
+import ast
+import difflib
+import hashlib
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional, Set, Any
 from pathlib import Path
-import ast
-import hashlib
-import json
-import difflib
-from watchdog.observers import Observer
+from typing import Any, Dict, List, Optional, Set
+
 from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 
 class ChangeType(Enum):

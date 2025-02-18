@@ -1,10 +1,6 @@
 import ast
-from pprint import pprint
 from typing import List
-
-
-def debug(node: ast.AST):
-    pprint(ast.dump(node))
+from dagsonar.utils.debugger import debug
 
 
 class Parser:
@@ -26,7 +22,6 @@ class Parser:
                     ):
                         if isinstance(node.value.func, ast.Name):
                             task = self.check_taskflow_operator(node.value.func.id)
-                            print(node.value.func.id)
                             if task is not None:
                                 tasks.append(task)
                             else:
@@ -38,13 +33,27 @@ class Parser:
 
     def check_taskflow_operator(self, id: str):
         for node in ast.walk(self.tree):
-            if isinstance(node, ast.FunctionDef) and node.name == id:
+            if (
+                isinstance(node, ast.FunctionDef)
+                and node.decorator_list is not None
+                and node.name == id
+            ):
                 return node
         return None
 
+    def find_variable_reference(self, variable: ast.Name) -> ast.Constant:
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == variable.id:
+                        if isinstance(node.value, ast.Constant):
+                            return node.value
 
-if __name__ == "__main__":
-    parser = Parser("/Users/r_hasan/Development/dagsonar/playground/dag_tester.py")
-    tasks = parser.get_tasks(["task_start", "task_cmd", "task_sensor", "end"])
-    for task in tasks:
-        debug(task)
+        return ast.Constant(value=None)
+
+    def find_function_reference(self, fn: ast.Name) -> ast.FunctionDef | None:
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.FunctionDef):
+                if node.name == fn.id:
+                    return node
+        return None

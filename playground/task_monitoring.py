@@ -1,13 +1,13 @@
-import os
-import json
-import smtplib
 import difflib
 import hashlib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Dict, List, Set
+import json
 import logging
+import os
+import smtplib
 from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from typing import Dict, List, Set
 
 # Configure logging
 logging.basicConfig(
