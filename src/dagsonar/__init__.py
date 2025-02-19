@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 from dagsonar.__about__ import __version__
+from dagsonar.hash import compute_hash
 from dagsonar.models import (DagConfig, DagReference, ExprReference,
                              ShellScriptReference, TaskReference)
 from dagsonar.parser import Parser
@@ -16,4 +17,5 @@ __all__ = [
     "DagReference",
     "ShellScriptReference",
     "ExprReference",
+    "compute_hash",
 ]

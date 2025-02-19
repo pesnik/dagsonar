@@ -1,8 +1,6 @@
 import ast
 from typing import List
 
-from dagsonar.utils.debugger import debug
-
 
 class Parser:
     def __init__(self, file_loc):

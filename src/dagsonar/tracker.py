@@ -5,8 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Set, Union
 
 from dagsonar import (DagConfig, DagReference, ExprReference, Parser,
-                      ShellScriptReference, TaskReference)
-from dagsonar.utils import compute_hash
+                      ShellScriptReference, TaskReference, compute_hash)
 
 
 class TaskTracker:
@@ -26,7 +25,7 @@ class TaskTracker:
 
     def save_history(self, reference: List[Dict[str, str | DagReference]]):
         with open(self.history_file, "w") as f:
-            json.dump(reference, f, indent=2, cls=CustomEncoder)
+            json.dump(reference, f, indent=2, cls=ReferenceEncoder)
 
     def start_monitoring(self):
         """Start monitoring DAG tasks for changes."""
@@ -193,7 +192,7 @@ class TaskTracker:
         return reference
 
 
-class CustomEncoder(json.JSONEncoder):
+class ReferenceEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(
             o, (DagReference, TaskReference, ShellScriptReference, ExprReference)
@@ -204,18 +203,3 @@ class CustomEncoder(json.JSONEncoder):
             return str(o)
 
         return super().default(o)
-
-
-if __name__ == "__main__":
-    tracker = TaskTracker()
-
-    config = {
-        "tester": DagConfig(
-            path=Path("/Users/r_hasan/Development/dagsonar/playground/dag_tester.py"),
-            tasks=["end", "start", "cmd_task_sh", "task_bash_op"],
-        )
-    }
-    new_reference = tracker.track_tasks(config)
-    change_detected = tracker.check_for_changes(new_reference)
-    tracker.save_history(new_reference)
-    print(change_detected)
