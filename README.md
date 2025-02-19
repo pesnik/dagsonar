@@ -1,137 +1,122 @@
-# DagSonar 🔍
+# DagSonar
 
-Deep visibility into your Airflow task changes
+Deep visibility into your Airflow task changes through AST parsing and tracking
 
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Apache Airflow](https://img.shields.io/badge/apache--airflow-2.0+-yellow.svg)](https://airflow.apache.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
-[![PyPI version](https://badge.fury.io/py/dagsonar.svg)](https://badge.fury.io/py/dagsonar)
 
 ## What is DagSonar?
 
-DagSonar is like having a high-precision radar system for your Airflow tasks. It detects, tracks, and notifies you about task changes across your entire Airflow environment, ensuring you never miss critical modifications to your DAGs.
+DagSonar is a monitoring tool that provides deep visibility into your Airflow DAG tasks by tracking changes through AST (Abstract Syntax Tree) parsing. It detects modifications in task definitions, external variables, shell scripts, and function calls, ensuring you never miss critical changes to your DAGs.
 
-![DagSonar Demo](docs/images/dagsonar-demo.gif)
+## Key Features
 
-## ✨ Key Features
+- **AST-Based Detection**: Tracks changes by parsing the Abstract Syntax Tree of your DAG files
+- **Task Reference Tracking**: Monitors task definitions, external variables, and function calls
+- **Shell Script Integration**: Tracks associated shell scripts referenced in BashOperator tasks
+- **Change History**: Maintains a JSON-based history of all task modifications
+- **Task Hash Generation**: Generates unique hashes for each task state to detect changes
+- **Support for Multiple DAGs**: Track tasks across multiple DAG configurations
 
-- 🎯 **Precise Detection**: Catches even the smallest task changes using AST parsing
-- 🔄 **Real-time Monitoring**: Continuous tracking of all DAG modifications
-- 📊 **Rich Diffs**: Visual and detailed change comparisons
-- 📧 **Smart Notifications**: Configurable alerts for task modifications
-- 🏗️ **Multi-Operator Support**: Works with all standard Airflow operators
-- 📈 **Change History**: Maintains a searchable audit trail
-- 🛡️ **Production Ready**: Built for reliability and performance
-
-## 🚀 Quick Start
-
-### Installation
+## Installation
 
 ```bash
 pip install dagsonar
 ```
 
-### Basic Usage
+## Basic Usage
 
 ```python
-from dagsonar import TaskTracker
+from pathlib import Path
+from dagsonar import TaskTracker, DagConfig
 
 # Initialize the tracker
-tracker = TaskTracker(
-    dags_folder='/path/to/dags',
-    notification_config={
-        "smtp_server": "smtp.company.com",
-        "smtp_port": 587,
-        "sender": "dagsonar@company.com",
-        "recipients": ["team@company.com"]
-    }
-)
+tracker = TaskTracker(history_file=Path("task_history.json"))
 
-# Start monitoring
-tracker.start_monitoring()
-```
-
-### As an Airflow DAG
-
-```python
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from datetime import datetime, timedelta
-
-dag = DAG(
-    'dagsonar_monitor',
-    schedule_interval=timedelta(hours=1),
-    start_date=datetime(2024, 2, 11),
-    catchup=False,
-    tags=['monitoring']
-)
-
-def run_dagsonar():
-    from dagsonar import TaskTracker
-    tracker = TaskTracker('/opt/airflow/dags')
-    tracker.scan_for_changes()
-
-monitor_tasks = PythonOperator(
-    task_id='scan_task_changes',
-    python_callable=run_dagsonar,
-    dag=dag
-)
-```
-
-## 🎛️ Configuration
-
-### Basic Configuration
-```python
-config = {
-    "notification": {
-        "smtp_server": "smtp.company.com",
-        "smtp_port": 587,
-        "sender": "dagsonar@company.com",
-        "recipients": ["team@company.com"]
-    },
-    "monitoring": {
-        "scan_interval": 3600,  # seconds
-        "ignore_patterns": ["_tmp_", "test_"],
-        "track_dependencies": True
-    }
+# Configure DAGs to track
+dag_configs = {
+    "example_dag": DagConfig(
+        path=Path("/path/to/dag.py"),
+        tasks=["task1", "task2"]  # Optional: specify tasks to track
+    )
 }
+
+# Track tasks and get references
+references = tracker.track_tasks(dag_configs)
+
+# Check for changes
+changes = tracker.check_for_changes(references)
+
+# Save the new state
+tracker.save_history(references)
 ```
 
-### Supported Operators
-- PythonOperator
-- BashOperator
-- SqlOperator
-- EmailOperator
-- SimpleHttpOperator
-- DummyOperator
-- SubDagOperator
-- Custom operators (configurable)
+## Features in Detail
 
-## 📊 Example Output
+### Task Reference Tracking
 
-```diff
-DAG: marketing_pipeline
-Task: process_customer_data
---- Previous Version
-+++ Current Version
-@@ -1,5 +1,5 @@
- PythonOperator(
-     task_id='process_customer_data',
--    python_callable=process_data,
-+    python_callable=process_data_v2,
-     dag=dag
- )
+DagSonar tracks several aspects of your tasks:
+- Task content and structure through AST
+- External variable references
+- Called functions
+- Shell scripts referenced in bash tasks
+- Task-specific hashes for change detection
+
+### Supported Task Types
+
+Currently supports tracking of:
+- Function-based task definitions
+- BashOperator task instances
+- Referenced shell scripts
+- External variable dependencies
+
+## Configuration
+
+### DagConfig
+```python
+from dagsonar import DagConfig
+from pathlib import Path
+
+config = DagConfig(
+    path=Path("/path/to/dag.py"),  # Path to DAG file
+    tasks=["task1", "task2"]       # Optional: List of specific tasks to track
+)
 ```
 
-## 🤝 Contributing
+### Task History
 
-We love contributions! Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
+Task history is stored in JSON format with the following structure:
+```json
+[
+  {
+    "dag_id": "example_dag",
+    "reference": {
+      "dag_id": "example_dag",
+      "task_history": [
+        {
+          "task_id": "task1",
+          "content": "<ast_content>",
+          "hash": "<computed_hash>",
+          "external_variables": [],
+          "called_functions": [],
+          "shell_scripts": []
+        }
+      ]
+    }
+  }
+]
+```
+
+## Contributing
+
+We welcome contributions! Please check out our [Contributing Guide](CONTRIBUTING.md) to get started.
 
 ### Development Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/pesnik/dagsonar.git
+git clone https://github.com/pesni/dagsonar.git
 cd dagsonar
 ```
 
@@ -153,27 +138,14 @@ pip install -e ".[dev]"
 pytest tests/
 ```
 
-## 📖 Documentation
-
-Full documentation is available at [dagsonar.readthedocs.io](https://dagsonar.readthedocs.io)
-
-## 🎯 Use Cases
-
-- Monitor production DAGs for unexpected changes
-- Track task modifications across multiple environments
-- Maintain compliance with change management procedures
-- Automate task change notifications
-- Debug task configuration issues
-
-## 📝 License
+## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-## 💖 Acknowledgments
+## Acknowledgments
 
 - Apache Airflow community
-- All our contributors
-- Users who provide valuable feedback
+- All contributors and users providing valuable feedback
 
 ---
-Made with 🚀 for the Airflow community
+Built for the Airflow community
