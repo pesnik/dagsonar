@@ -48,6 +48,7 @@ path = "src/dagsonar/__about__.py"
 [tool.hatch.envs.default]
 dependencies = [
     "black>=25.1.0",
+    "black[jupyter]>=25.1.0",
     "isort>=5.12.0",
 ]
 

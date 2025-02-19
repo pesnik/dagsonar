@@ -2,6 +2,7 @@ import pendulum
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 from airflow.sensors.filesystem import FileSensor
+from airflow.operators.bash import BashOperator
 
 default_args = {
     "owner": "mr.hasan",
@@ -43,8 +44,19 @@ def dag_tester():
     def cmd_task(message):
         return f"echo {message}"
 
+    @task.bash
+    def cmd_task_sh(message):
+        return (
+            f"/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh {message}"
+        )
+
     message = "Hello World"
     task_cmd = cmd_task(message=message)
+
+    task_bash_op = BashOperator(
+        task_id="bash_op",
+        bash_command="/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh ",
+    )
 
     @task
     def end():
@@ -52,7 +64,14 @@ def dag_tester():
         caller()
         print("Job Completed")
 
-    chain(task_start, task_sensor, task_cmd, end())
+    chain(
+        task_start,
+        task_sensor,
+        task_cmd,
+        cmd_task_sh("Cluster hop, on the top"),
+        task_bash_op,
+        end(),
+    )
     # task_start >> task_sensor >> task_cmd >> end()
 
 
