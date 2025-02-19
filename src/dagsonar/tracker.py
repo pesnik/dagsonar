@@ -1,5 +1,4 @@
 import ast
-import hashlib
 import json
 from dataclasses import asdict
 from pathlib import Path
@@ -200,6 +199,10 @@ class CustomEncoder(json.JSONEncoder):
             o, (DagReference, TaskReference, ShellScriptReference, ExprReference)
         ):
             return asdict(o)
+
+        if isinstance(o, Path):
+            return str(o)
+
         return super().default(o)
 
 
@@ -209,7 +212,7 @@ if __name__ == "__main__":
     config = {
         "tester": DagConfig(
             path=Path("/Users/r_hasan/Development/dagsonar/playground/dag_tester.py"),
-            tasks=["end", "start", "cmd_task"],
+            tasks=["end", "start", "cmd_task_sh", "task_bash_op"],
         )
     }
     new_reference = tracker.track_tasks(config)

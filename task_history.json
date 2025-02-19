@@ -15,10 +15,15 @@
           "last_modified": null
         },
         {
-          "task_id": "cmd_task",
+          "task_id": "cmd_task_sh",
           "task_type": null,
-          "content": "FunctionDef(name='cmd_task', args=arguments(posonlyargs=[], args=[arg(arg='message')], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Return(value=JoinedStr(values=[Constant(value='echo '), FormattedValue(value=Name(id='message', ctx=Load()), conversion=-1)]))], decorator_list=[Attribute(value=Name(id='task', ctx=Load()), attr='bash', ctx=Load())], type_params=[])",
-          "shell_scripts": [],
+          "content": "FunctionDef(name='cmd_task_sh', args=arguments(posonlyargs=[], args=[arg(arg='message')], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Return(value=JoinedStr(values=[Constant(value='/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh '), FormattedValue(value=Name(id='message', ctx=Load()), conversion=-1)]))], decorator_list=[Attribute(value=Name(id='task', ctx=Load()), attr='bash', ctx=Load())], type_params=[])",
+          "shell_scripts": [
+            {
+              "path": "/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh",
+              "content": "Constant(value=\"#!bin/bash\\n\\necho 'Greeting, Master' $1\\n\")"
+            }
+          ],
           "external_variables": [
             {
               "name": "message",
@@ -26,7 +31,22 @@
             }
           ],
           "called_functions": [],
-          "hash": "2fbcf9d1bc52f55988e0101714c35ac67dcbd7d6db59c8bb3bbf7b28d6d0ba88",
+          "hash": "f36d17a2ae0a91b31d21dd6684869826f18bbb468d3d5333c5512a1d4b6fab47",
+          "last_modified": null
+        },
+        {
+          "task_id": "BashOperator",
+          "task_type": null,
+          "content": "Call(func=Name(id='BashOperator', ctx=Load()), args=[], keywords=[keyword(arg='task_id', value=Constant(value='bash_op')), keyword(arg='bash_command', value=Constant(value='/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh '))])",
+          "shell_scripts": [
+            {
+              "path": "/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh",
+              "content": "Constant(value=\"#!bin/bash\\n\\necho 'Greeting, Master' $1\\n\")"
+            }
+          ],
+          "external_variables": [],
+          "called_functions": [],
+          "hash": "32b98df4f6f493aec10d181efe24b25f3f7c63fffb42979d5be9edf54fcd733e",
           "last_modified": null
         },
         {
