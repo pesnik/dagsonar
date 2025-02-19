@@ -1,0 +1,55 @@
+[
+  {
+    "dag_id": "tester",
+    "reference": {
+      "dag_id": "tester",
+      "task_history": [
+        {
+          "task_id": "start",
+          "task_type": null,
+          "content": "FunctionDef(name='start', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Constant(value='Job Started @10')], keywords=[]))], decorator_list=[Name(id='task', ctx=Load())], type_params=[])",
+          "shell_scripts": [],
+          "external_variables": [],
+          "called_functions": [],
+          "hash": "9f4e3562c2574d71adc554341469d56e7a8799bf80fd316a4217bba5e0de285c",
+          "last_modified": null
+        },
+        {
+          "task_id": "cmd_task",
+          "task_type": null,
+          "content": "FunctionDef(name='cmd_task', args=arguments(posonlyargs=[], args=[arg(arg='message')], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Return(value=JoinedStr(values=[Constant(value='echo '), FormattedValue(value=Name(id='message', ctx=Load()), conversion=-1)]))], decorator_list=[Attribute(value=Name(id='task', ctx=Load()), attr='bash', ctx=Load())], type_params=[])",
+          "shell_scripts": [],
+          "external_variables": [
+            {
+              "name": "message",
+              "content": "Constant(value='Hello World')"
+            }
+          ],
+          "called_functions": [],
+          "hash": "2fbcf9d1bc52f55988e0101714c35ac67dcbd7d6db59c8bb3bbf7b28d6d0ba88",
+          "last_modified": null
+        },
+        {
+          "task_id": "end",
+          "task_type": null,
+          "content": "FunctionDef(name='end', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Name(id='END_MESSAGE', ctx=Load())], keywords=[])), Expr(value=Call(func=Name(id='caller', ctx=Load()), args=[], keywords=[])), Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Constant(value='Job Completed')], keywords=[]))], decorator_list=[Name(id='task', ctx=Load())], type_params=[])",
+          "shell_scripts": [],
+          "external_variables": [
+            {
+              "name": "END_MESSAGE",
+              "content": "Constant(value='End of DAG 1')"
+            }
+          ],
+          "called_functions": [
+            {
+              "name": "caller",
+              "content": "FunctionDef(name='caller', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Constant(value='Has been called!')], keywords=[]))], decorator_list=[], type_params=[])"
+            }
+          ],
+          "hash": "d3caed2dcadd9a4212d2df9f9ae17844940aad896287f76e69200ccb2299ed12",
+          "last_modified": null
+        }
+      ]
+    }
+  }
+]

@@ -11,7 +11,7 @@ class Parser:
             self.tree = ast.parse(f.read())
             # debug(self.tree)
 
-    def get_tasks(self, task_ids) -> List[ast.FunctionDef | ast.Call]:
+    def get_tasks(self, task_ids: List[str]) -> List[ast.FunctionDef | ast.Call]:
         tasks = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.Assign):
