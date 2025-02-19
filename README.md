@@ -116,7 +116,7 @@ We welcome contributions! Please check out our [Contributing Guide](CONTRIBUTING
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/pesni/dagsonar.git
+git clone https://github.com/pesnik/dagsonar.git
 cd dagsonar
 ```
 
