@@ -2,6 +2,7 @@ import ast
 import json
 from pathlib import Path
 from typing import Dict, List, Set, Union
+from datetime import datetime
 
 from dagsonar import (DagConfig, DagReference, ExprReference, Parser,
                       ReferenceEncoder, ShellScriptReference, TaskReference,
@@ -97,7 +98,17 @@ class TaskTracker:
 
             result.append({"dag": reference.dag_id, "tasks": changed_tasks})
 
-        return result
+        for changed_tasks_list in result:
+            if len(changed_tasks_list) <= 0:
+                continue
+
+            for dag in new_reference:
+                reference_blocks = dag['reference'].task_history
+                for ref in reference_blocks:
+                    if ref.task_id in changed_tasks_list['tasks']:
+                        ref.last_modified = str(datetime.now())
+                
+        return result, new_reference
 
     def _process_task(
         self, task: ast.FunctionDef | ast.Call, parser: Parser
