@@ -46,7 +46,7 @@ dag_configs = {
 references = tracker.track_tasks(dag_configs)
 
 # Check for changes
-changes = tracker.check_for_changes(references)
+changes, references = tracker.check_for_changes(references)
 
 # Save the new state
 tracker.save_history(references)
