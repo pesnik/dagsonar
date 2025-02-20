@@ -154,7 +154,9 @@ class TaskTracker:
             bash_operator = (
                 isinstance(task.func, ast.Name) and task.func.id == "BashOperator"
             )
-            reference.task_id = task.func.id if isinstance(task.func, ast.Name) else ""
+
+            task_id = next((keyword.value for keyword in task.keywords if keyword.arg == 'task_id'), ast.Constant)
+            reference.task_id = task_id.value
             reference.content = ast.dump(task)
 
             for arg in task.args:
