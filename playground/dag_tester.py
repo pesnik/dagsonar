@@ -46,16 +46,14 @@ def dag_tester():
 
     @task.bash
     def cmd_task_sh(message):
-        return (
-            f"/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh {message}"
-        )
+        return f"/home/laboratory/dagsonar/playground/greeting_bot.sh {message}"
 
-    message = "Hello World"
+    message = "Hello World Glitch"
     task_cmd = cmd_task(message=message)
 
     task_bash_op = BashOperator(
         task_id="bash_op",
-        bash_command="/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh ",
+        bash_command="/home/laboratory/dagsonar/playground/greeting_bot.sh ",
     )
 
     @task

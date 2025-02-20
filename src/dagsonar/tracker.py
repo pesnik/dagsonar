@@ -1,11 +1,11 @@
 import ast
 import json
-from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List, Set, Union
 
 from dagsonar import (DagConfig, DagReference, ExprReference, Parser,
-                      ShellScriptReference, TaskReference, compute_hash)
+                      ReferenceEncoder, ShellScriptReference, TaskReference,
+                      compute_hash)
 
 
 class TaskTracker:
@@ -61,11 +61,11 @@ class TaskTracker:
         """
         Returns a list of task IDs whose hash values have changed.
         """
-        changed_tasks = []
         result = []
 
         for dag in new_reference:
-            reference: Union[DagReference, str] = dag.get("reference", "")
+            changed_tasks = []
+            reference: DagReference = dag["reference"]
 
             if not isinstance(reference, DagReference):
                 continue
@@ -155,7 +155,14 @@ class TaskTracker:
                 isinstance(task.func, ast.Name) and task.func.id == "BashOperator"
             )
 
-            task_id = next((keyword.value for keyword in task.keywords if keyword.arg == 'task_id'), ast.Constant)
+            task_id = next(
+                (
+                    keyword.value
+                    for keyword in task.keywords
+                    if keyword.arg == "task_id"
+                ),
+                ast.Constant,
+            )
             reference.task_id = task_id.value
             reference.content = ast.dump(task)
 
@@ -192,16 +199,3 @@ class TaskTracker:
                             )
         reference.hash = compute_hash(reference)
         return reference
-
-
-class ReferenceEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(
-            o, (DagReference, TaskReference, ShellScriptReference, ExprReference)
-        ):
-            return asdict(o)
-
-        if isinstance(o, Path):
-            return str(o)
-
-        return super().default(o)
