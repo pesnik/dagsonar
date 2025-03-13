@@ -45,7 +45,7 @@ class TaskTracker:
                 parser = Parser(config.path)
                 tasks = parser.get_tasks(config.tasks)
                 for task in tasks:
-                    tracks = self._process_task(task, parser)
+                    tracks = self._process_task(task, parser, file=config.path)
                     history.append(tracks)
                 dag_references.append(
                     {
@@ -106,12 +106,12 @@ class TaskTracker:
                 reference_blocks = dag['reference'].task_history
                 for ref in reference_blocks:
                     if ref.task_id in changed_tasks_list['tasks']:
-                        ref.last_modified = str(datetime.now())
+                        ref.last_modified = max([ref.last_modified] + [sc.mtime for sc in ref.shell_scripts])
                 
         return result, new_reference
 
     def _process_task(
-        self, task: ast.FunctionDef | ast.Call, parser: Parser
+        self, task: ast.FunctionDef | ast.Call, parser: Parser, file: str = ""
     ) -> TaskReference:
         reference = TaskReference()
         if isinstance(task, ast.FunctionDef):
@@ -139,6 +139,9 @@ class TaskTracker:
                                 ShellScriptReference(
                                     path=Path(file),
                                     content=ast.dump(ast.Constant(content)),
+                                    mtime=datetime.fromtimestamp(
+                                        Path(file).stat().st_mtime
+                                    ),
                                 )
                             )
 
@@ -206,7 +209,13 @@ class TaskTracker:
                                 ShellScriptReference(
                                     path=Path(file),
                                     content=ast.dump(ast.Constant(content)),
+                                    mtime=datetime.fromtimestamp(
+                                        Path(file).stat().st_mtime
+                                    ),
                                 )
                             )
         reference.hash = compute_hash(reference)
+        reference.last_modified = datetime.fromtimestamp(
+            Path(file).stat().st_mtime
+        )
         return reference

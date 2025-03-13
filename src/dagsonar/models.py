@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Set
+from datetime import date
 
 
 @dataclass
@@ -13,6 +14,7 @@ class DagConfig:
 class ShellScriptReference:
     path: Path
     content: str
+    mtime: date
 
 
 @dataclass
