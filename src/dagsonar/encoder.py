@@ -1,3 +1,4 @@
+import datetime
 import json
 from dataclasses import asdict
 from pathlib import Path
@@ -12,8 +13,11 @@ class ReferenceEncoder(json.JSONEncoder):
             o, (DagReference, TaskReference, ShellScriptReference, ExprReference)
         ):
             return asdict(o)
-
+            
         if isinstance(o, Path):
             return str(o)
-
+            
+        if isinstance(o, (datetime.datetime, datetime.date)):
+            return o.isoformat()
+            
         return super().default(o)

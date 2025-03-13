@@ -8,7 +8,7 @@ def test_task_tracker():
 
     config = {
         "tester": DagConfig(
-            path=Path("/Users/r_hasan/Development/dagsonar/playground/dag_tester.py"),
+            path=Path("./playground/dag_tester.py"),
             tasks=["end", "start", "cmd_task_sh", "task_bash_op"],
         )
     }
