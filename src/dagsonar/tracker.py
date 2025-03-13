@@ -45,7 +45,7 @@ class TaskTracker:
                 parser = Parser(config.path)
                 tasks = parser.get_tasks(config.tasks)
                 for task in tasks:
-                    tracks = self._process_task(task, parser, file=config.path)
+                    tracks = self._process_task(task, parser, src_file=config.path)
                     history.append(tracks)
                 dag_references.append(
                     {
@@ -55,12 +55,20 @@ class TaskTracker:
                 )
 
         return dag_references
-
     def check_for_changes(
-        self, new_reference: List[Dict[str, Union[str, DagReference]]]
+        self, new_reference: List[Dict[str, Union[str, DagReference]]],
+        auto_save: bool = True
     ) -> List[Dict[str, str]]:
         """
         Returns a list of task IDs whose hash values have changed.
+        Automatically saves the updated history if auto_save is True.
+        
+        Args:
+            new_reference: The new references to check against history
+            auto_save: Whether to automatically save the history after checking (default: True)
+            
+        Returns:
+            List of dictionaries containing changed tasks by DAG
         """
         result = []
 
@@ -94,24 +102,44 @@ class TaskTracker:
 
             for task_id, new_hash in new_hashes.items():
                 if task_id not in old_hashes or old_hashes[task_id] != new_hash:
-                    changed_tasks.append(task_id)
+                    task_obj = next((task for task in reference.task_history if task.task_id == task_id), None)
+                    
+                    if task_obj:
+                        timestamps = [task_obj.last_modified] + [sc.mtime for sc in task_obj.shell_scripts]
+                        max_timestamp = max(timestamps)
+                        
+                        task_obj.last_modified = max_timestamp
+                        
+                        changed_tasks.append({
+                            "task_id": task_id, 
+                            "last_modified": max_timestamp
+                        })
 
             result.append({"dag": reference.dag_id, "tasks": changed_tasks})
+        
+        if auto_save:
+            self.save_history(new_reference)
 
-        for changed_tasks_list in result:
-            if len(changed_tasks_list) <= 0:
-                continue
+        return result
 
-            for dag in new_reference:
-                reference_blocks = dag['reference'].task_history
-                for ref in reference_blocks:
-                    if ref.task_id in changed_tasks_list['tasks']:
-                        ref.last_modified = max([ref.last_modified] + [sc.mtime for sc in ref.shell_scripts])
-                
-        return result, new_reference
+    def track_changes(self, dag_configs: Dict[str, DagConfig], auto_save: bool = True) -> List[Dict[str, str]]:
+        """
+        Convenience method that combines tracking, checking for changes, and saving history.
+        
+        Args:
+            dag_configs: Dictionary of DAG configurations to track
+            
+        Returns:
+            List of dictionaries containing changed tasks by DAG
+        """
+        new_reference = self.track_tasks(dag_configs)
+        
+        changes = self.check_for_changes(new_reference, auto_save=auto_save)
+        
+        return changes
 
     def _process_task(
-        self, task: ast.FunctionDef | ast.Call, parser: Parser, file: str = ""
+        self, task: ast.FunctionDef | ast.Call, parser: Parser, src_file: str = ""
     ) -> TaskReference:
         reference = TaskReference()
         if isinstance(task, ast.FunctionDef):
@@ -216,6 +244,6 @@ class TaskTracker:
                             )
         reference.hash = compute_hash(reference)
         reference.last_modified = datetime.fromtimestamp(
-            Path(file).stat().st_mtime
+            Path(src_file).stat().st_mtime
         )
         return reference

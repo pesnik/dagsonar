@@ -1,3 +1,3 @@
 #!bin/bash
 
-echo 'Greeting, Master' $1
+echo 'Greeting, Master Yoda, ' $1
