@@ -52,7 +52,7 @@ def dag_tester():
     task_cmd = cmd_task(message=message)
 
     task_bash_op = BashOperator(
-        task_id="bash_op",
+        task_id="bash_op_changed",
         bash_command="/home/laboratory/dagsonar/playground/greeting_bot.sh ",
     )
 
@@ -73,7 +73,7 @@ def dag_tester():
     # task_start >> task_sensor >> task_cmd >> end()
 
 
-END_MESSAGE = "End of DAG 1"
+END_MESSAGE = "End of DAG 1, Warning!"
 FILE_PATH = "/usr/local/airflow/dags/initiator"
 
 

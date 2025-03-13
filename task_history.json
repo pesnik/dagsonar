@@ -5,49 +5,20 @@
       "dag_id": "tester",
       "task_history": [
         {
-          "task_id": "start",
+          "task_id": "bash_op_changed",
           "task_type": null,
-          "content": "FunctionDef(name='start', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Constant(value='Job Started @10')], keywords=[]))], decorator_list=[Name(id='task', ctx=Load())], type_params=[])",
-          "shell_scripts": [],
-          "external_variables": [],
-          "called_functions": [],
-          "hash": "9f4e3562c2574d71adc554341469d56e7a8799bf80fd316a4217bba5e0de285c",
-          "last_modified": null
-        },
-        {
-          "task_id": "cmd_task_sh",
-          "task_type": null,
-          "content": "FunctionDef(name='cmd_task_sh', args=arguments(posonlyargs=[], args=[arg(arg='message')], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Return(value=JoinedStr(values=[Constant(value='/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh '), FormattedValue(value=Name(id='message', ctx=Load()), conversion=-1)]))], decorator_list=[Attribute(value=Name(id='task', ctx=Load()), attr='bash', ctx=Load())], type_params=[])",
+          "content": "Call(func=Name(id='BashOperator', ctx=Load()), args=[], keywords=[keyword(arg='task_id', value=Constant(value='bash_op_changed')), keyword(arg='bash_command', value=Constant(value='/home/laboratory/dagsonar/playground/greeting_bot.sh '))])",
           "shell_scripts": [
             {
-              "path": "/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh",
-              "content": "Constant(value=\"#!bin/bash\\n\\necho 'Greeting, Master' $1\\n\")"
-            }
-          ],
-          "external_variables": [
-            {
-              "name": "message",
-              "content": "Constant(value='Hello World')"
-            }
-          ],
-          "called_functions": [],
-          "hash": "f36d17a2ae0a91b31d21dd6684869826f18bbb468d3d5333c5512a1d4b6fab47",
-          "last_modified": null
-        },
-        {
-          "task_id": "BashOperator",
-          "task_type": null,
-          "content": "Call(func=Name(id='BashOperator', ctx=Load()), args=[], keywords=[keyword(arg='task_id', value=Constant(value='bash_op')), keyword(arg='bash_command', value=Constant(value='/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh '))])",
-          "shell_scripts": [
-            {
-              "path": "/Users/r_hasan/Development/dagsonar/playground/greeting_bot.sh",
-              "content": "Constant(value=\"#!bin/bash\\n\\necho 'Greeting, Master' $1\\n\")"
+              "path": "/home/laboratory/dagsonar/playground/greeting_bot.sh",
+              "content": "Constant(value=\"#!bin/bash\\n\\necho 'Greeting, Master Yoda, ' $1\\n\")",
+              "mtime": "2025-03-14T02:31:50.756094"
             }
           ],
           "external_variables": [],
           "called_functions": [],
-          "hash": "32b98df4f6f493aec10d181efe24b25f3f7c63fffb42979d5be9edf54fcd733e",
-          "last_modified": null
+          "hash": "595520f09244ebefc1511bf57d4c7fece63bc3a2611f6ed67d29b8835b249168",
+          "last_modified": "2025-03-14T02:34:57.024951"
         },
         {
           "task_id": "end",
@@ -57,7 +28,7 @@
           "external_variables": [
             {
               "name": "END_MESSAGE",
-              "content": "Constant(value='End of DAG 1')"
+              "content": "Constant(value='End of DAG 1, Warning!')"
             }
           ],
           "called_functions": [
@@ -66,8 +37,8 @@
               "content": "FunctionDef(name='caller', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Expr(value=Call(func=Name(id='print', ctx=Load()), args=[Constant(value='Has been called!')], keywords=[]))], decorator_list=[], type_params=[])"
             }
           ],
-          "hash": "d3caed2dcadd9a4212d2df9f9ae17844940aad896287f76e69200ccb2299ed12",
-          "last_modified": null
+          "hash": "fa92557b0b901ab051eaf2c5f99c15fc3d45e75c728293b536318d1ec039a1c0",
+          "last_modified": "2025-03-14T02:34:57.024951"
         }
       ]
     }

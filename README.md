@@ -34,22 +34,17 @@ from dagsonar import TaskTracker, DagConfig
 # Initialize the tracker
 tracker = TaskTracker(history_file=Path("task_history.json"))
 
-# Configure DAGs to track
-dag_configs = {
-    "example_dag": DagConfig(
-        path=Path("/path/to/dag.py"),
-        tasks=["task1", "task2"]  # Optional: specify tasks to track
+# Define your DAG configuration
+config = {
+    "tester": DagConfig(
+        path=Path("./playground/dag_tester.py"),
+        tasks=["task_bash_op"],
     )
 }
 
-# Track tasks and get references
-references = tracker.track_tasks(dag_configs)
-
-# Check for changes
-changes, references = tracker.check_for_changes(references)
-
-# Save the new state
-tracker.save_history(references)
+# Track changes
+changes = tracker.track_changes(config, auto_save=False)
+print(changes)
 ```
 
 ## Features in Detail
